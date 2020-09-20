@@ -1,0 +1,130 @@
+---
+title: "ASSIGNMENT 5"
+author: "Simek, Kathryn"
+date: '2020-09-20'
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+---
+### Question 1: What are the elements in your data (including the categories and data types)?
+#### Answer: 
+* Id - quantitative - character
+* Id2 - quantitative - integer
+* Geography - categorical - character
+* PopGroupId - quantitative - integer
+* POPGROUP.display-label - categorical - character
+* RacesReported - quantitative - integer
+* HSDegree - quantitative - numeric
+* BachDegree - quantitative - numeric
+
+### Question 2. Please provide the output from the following functions: str(); nrow(); ncol()
+
+```{r}
+## Set the working directory to the root of your DSC 520 directory
+setwd("C:/Users/katie/OneDrive/Documents/GitHub/dsc520")
+
+## Load the ggplot2 package
+library(ggplot2)
+theme_set(theme_minimal())
+
+acs_df <- read.csv("data/acs-14-1yr-s0201.csv")
+
+```
+
+### str():
+```{r}
+str(acs_df)
+```
+
+### nrow():
+```{r}
+nrow(acs_df)
+```
+
+### ncol():
+```{r}
+ncol(acs_df)
+```
+
+### Question 3. Create a Histogram of the HSDegree variable.
+#### a. Set a bin size for the Histogram.
+#### b. Include a Title and appropriate X/Y axis labels on your Histogram Plot.
+
+```{r}
+ggplot(acs_df, aes(HSDegree))+geom_histogram(bins = 68) +
+      ggtitle("Likelyhood of High School Degree Per County") +
+      xlab("Percent of Population with HS Degree") +
+      ylab("Number of Counties")  
+```
+
+### Question 4. Answer the following questions based on the Histogram produced:
+### a. Based on what you see in this histogram, is the data distribution unimodal?
+#### Answer: Yes, the data distribution is unimodal.
+
+### b. Is it approximately symmetrical?
+#### Answer: No, the data distribution is not symmetrical.
+
+### c. Is it approximately bell-shaped?
+#### Answer: Yes, the data is approximately bell-shaped.
+
+### d. Is it approximately normal?
+#### Answer: No, it is not approximately normal.
+
+### e. If not normal, is the distribution skewed? If so, in which direction?
+#### Answer: The distribution is skewed negatively.
+
+### f. Include a normal curve to the Histogram that you plotted.
+```{r}
+ggplot(acs_df, aes(HSDegree)) + geom_histogram(bins = 68) +
+  ggtitle("Likelyhood of High School Degree Per County") +
+  xlab("Percent of Population with HS Degree") +
+  ylab("Number of Counties") + 
+  stat_function(fun = dnorm, args = list(mean = mean(acs_df$HSDegree, 
+                                                     na.rm = TRUE), 
+                                         sd = sd(acs_df$HSDegree, 
+                                                 na.rm = TRUE)))
+```
+
+### g. Explain whether a normal distribution can accurately be used as a model for this data.
+#### Answer: No, the normal curve is significantly different from the probability plot. The plot is skewed quite a bit.
+
+
+### Question 5. Create a Probability Plot of the HSDegree variable.
+```{r}
+ggplot(acs_df, aes(HSDegree))+geom_density() +
+      ggtitle("Likelyhood of High School Degree Per County") +
+      xlab("Percent of Population with HS Degree") +
+      ylab("Number of Counties")
+```
+
+### Question 6. Answer the following questions based on the Probability Plot:
+### a. Based on what you see in this probability plot, is the distribution approximately normal? Explain how you know.
+#### Answer: The plot does not have a symetrical shape, so the distribution is not normal.
+
+### b. If not normal, is the distribution skewed? If so, in which direction? Explain how you know.
+#### Answer: The distribution is skewed negatively, the tail on the left side of the peak is longer and thinner than the right side of the curve.
+
+
+### Question 7. Now that you have looked at this data visually for normality, you will now quantify normality with numbers using the stat.desc() function. Include a screen capture of the results produced.
+```{r}
+library(psych)
+describe(acs_df)
+```
+```{r}
+library(moments)
+skewness(acs_df$HSDegree)
+```
+```{r}
+library(moments)
+kurtosis(acs_df$HSDegree)
+```
+```{r}
+hsdegree_z <-(acs_df$HSDegree - mean(acs_df$HSDegree)) / sd(acs_df$HSDegree)
+hsdegree_z
+```
+
+### Question 8. In several sentences provide an explanation of the result produced for skew, kurtosis, and z-scores. In addition, explain how a change in the sample size may change your explanation?
+#### Answer: The skew of -1.69 is greater than a normal skew range of -1 to 1 so the skew is not normal, it is significantly negatively skewed. The kurtosis of 7.46 is greater than the -3 to 3 range so the kurtosis is not normal, it is significantly more positive, or leptokurtic. With the z-scores, we can see that most values are pretty significant, with a large range in values, which describes why we have heavy tails and many outliers in our distribution. 
+
+  
